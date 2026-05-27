@@ -1,0 +1,425 @@
+/* ============================================
+   :root es un selector especial que apunta al
+   elemento raíz del documento (el <html>).
+   Las variables definidas acá con -- son
+   accesibles desde cualquier parte del CSS
+   usando var(--nombre).
+   
+   Ventaja: si querés cambiar un color, lo
+   cambiás en un solo lugar y se actualiza
+   en toda la página automáticamente.
+============================================ */
+:root {
+  --cream:   #f5f0e8;  /* fondo general: beige cálido */
+  --dark:    #1a1612;  /* texto principal: casi negro */
+  --brown:   #3d2c1e;  /* header y footer: marrón oscuro */
+  --orange:  #e8702a;  /* color de acento principal */
+  --orange2: #c9531a;  /* naranja más oscuro para hover */
+  --green:   #2d6a4f;  /* badges de dificultad fácil */
+  --red:     #c0392b;  /* badges de dificultad difícil */
+  --card-bg: #fffdf7;  /* fondo de las tarjetas: blanco cálido */
+  --shadow:  0 4px 24px rgba(30,20,10,.13); /* sombra suave reutilizable */
+}
+
+/* ============================================
+   RESET BÁSICO
+   
+   Los navegadores aplican estilos por defecto
+   distintos entre sí (márgenes, paddings, etc).
+   Este reset los elimina para tener una base
+   limpia e igual en todos los navegadores.
+   
+   * selecciona todos los elementos.
+   ::before y ::after son pseudo-elementos que
+   algunos navegadores también estilizan por defecto.
+   
+   box-sizing: border-box hace que el padding y
+   el border se incluyan dentro del ancho y alto
+   del elemento, en vez de sumarse por fuera.
+   Esto evita cálculos complicados de tamaño.
+============================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   BODY
+   
+   Estilos base que se aplican a toda la página.
+   font-family usa DM Sans (importada de Google
+   Fonts) y 'sans-serif' como fuente de respaldo
+   por si la importación falla.
+   min-height: 100vh garantiza que la página
+   ocupe al menos toda la altura de la pantalla,
+   evitando que el footer quede flotando arriba
+   en páginas con poco contenido.
+============================================ */
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--cream);
+  color: var(--dark);
+  min-height: 100vh;
+}
+
+/* ============================================
+   HEADER
+============================================ */
+header {
+  background-color: var(--brown);
+  color: var(--cream);
+  padding: 2.2rem 2rem 1.8rem;
+  text-align: center;
+  position: relative; /* necesario para que el ::before
+                         se posicione dentro del header */
+  overflow: hidden;   /* evita que el efecto decorativo
+                         ::before se salga del header */
+}
+
+header::before {
+  /*
+    ::before es un pseudo-elemento: aparece visualmente
+    pero no existe en el HTML. Sirve para agregar
+    elementos decorativos solo con CSS.
+    
+    content: '' es obligatorio para que el pseudo-elemento
+    se renderice, aunque esté vacío.
+    
+    inset: 0 es equivalente a escribir:
+    top: 0; right: 0; bottom: 0; left: 0;
+    Hace que cubra todo el header.
+    
+    radial-gradient crea círculos de color difuminados
+    que le dan profundidad visual al fondo.
+    
+    pointer-events: none hace que el elemento decorativo
+    no interfiera con el mouse del usuario.
+  */
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(232,112,42,.18) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(212,160,23,.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  /*
+    clamp(mínimo, preferido, máximo):
+    El tamaño de fuente se ajusta fluidamente
+    según el ancho de la pantalla.
+    - Nunca baja de 2.4rem (celulares chicos)
+    - Prefiere 6vw (6% del ancho de la pantalla)
+    - Nunca supera 4rem (pantallas grandes)
+  */
+  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #fff;
+  position: relative; /* para que quede por delante
+                         del ::before decorativo */
+}
+
+header h1 span {
+  /*
+    El <span> dentro del h1 permite colorear
+    solo la palabra "hoy" sin afectar el resto.
+  */
+  color: var(--orange);
+}
+
+header p {
+  margin-top: .6rem;
+  font-size: 1.05rem;
+  opacity: .75; /* semitransparente para que
+                   se vea más suave que el título */
+  position: relative;
+}
+
+.dice-row {
+  display: flex;           /* alinea los emojis en fila */
+  justify-content: center; /* los centra horizontalmente */
+  gap: 1rem;               /* espacio entre cada emoji */
+  margin-top: 1rem;
+  font-size: 1.6rem;
+  opacity: .45;            /* muy transparente, es decorativo */
+  position: relative;
+}
+
+/* ============================================
+   FILTROS CON CSS PURO
+   
+   CÓMO FUNCIONA EL TRUCO COMPLETO:
+   
+   1. En el HTML hay inputs radio ocultos antes
+      del catálogo.
+   2. Los labels visibles (los botones) están
+      conectados a esos radios con for="...".
+   3. Al hacer clic en un label, el radio
+      correspondiente se activa (:checked).
+   4. El CSS detecta cuál está activo con el
+      selector :checked y usa ~ (hermano siguiente)
+      para llegar a los elementos que vienen después:
+      el label del botón y las tarjetas del catálogo.
+============================================ */
+
+/* Oculta los inputs radio visualmente.
+   display:none los saca del flujo del documento
+   pero siguen funcionando para guardar el estado. */
+.filtro-radio {
+  display: none;
+}
+
+.filters {
+  max-width: 1100px;
+  margin: 1.6rem auto 0; /* auto en los lados centra
+                            el bloque horizontalmente */
+  padding: 0 1.5rem;
+  display: flex;      /* los botones se acomodan en fila */
+  flex-wrap: wrap;    /* si no entran, pasan a la siguiente línea */
+  gap: .55rem;
+  align-items: center;
+}
+
+.filters-label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--brown);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+}
+
+/* Estilo visual de los labels que funcionan como botones */
+.filter-btn {
+  padding: .36rem .9rem;
+  border: 2px solid #c9bfa8;
+  border-radius: 999px; /* valor muy alto = bordes completamente
+                           redondeados, forma de "pastilla" */
+  font-family: inherit; /* hereda la tipografía del body */
+  font-size: .84rem;
+  color: var(--brown);
+  cursor: pointer;      /* muestra la manito al pasar el mouse */
+  transition: all .18s; /* anima suavemente todos los cambios
+                           de estilo en 0.18 segundos */
+  font-weight: 500;
+  user-select: none;    /* evita que el texto del botón
+                           se seleccione al hacer clic */
+}
+
+.filter-btn:hover {
+  background: var(--brown);
+  border-color: var(--brown);
+  color: var(--cream);
+}
+
+/*
+  SELECTOR DE BOTÓN ACTIVO:
+  
+  Cuando un radio está :checked, usamos ~ para
+  llegar a .filters y dentro buscar el label por id.
+  
+  Ejemplo de lectura:
+  "#filtro-facil:checked ~ .filters #label-facil"
+  = "Si el radio con id filtro-facil está chequeado,
+     buscá dentro de .filters el elemento con
+     id label-facil y aplicale estos estilos."
+  
+  Esto marca visualmente el botón activo con
+  el mismo estilo que el hover.
+*/
+#filtro-todos:checked   ~ .filters #label-todos,
+#filtro-facil:checked   ~ .filters #label-facil,
+#filtro-media:checked   ~ .filters #label-media,
+#filtro-dificil:checked ~ .filters #label-dificil,
+#filtro-dos:checked     ~ .filters #label-dos,
+#filtro-familia:checked ~ .filters #label-familia,
+#filtro-grande:checked  ~ .filters #label-grande {
+  background: var(--brown);
+  border-color: var(--brown);
+  color: var(--cream);
+}
+
+/* ============================================
+   CATÁLOGO — GRILLA
+   
+   display: grid activa el sistema de grilla de CSS.
+   
+   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))
+   
+   Esto significa:
+   - auto-fill: creá tantas columnas como entren
+   - minmax(280px, 1fr): cada columna mide mínimo
+     280px y máximo 1 fracción del espacio disponible
+   
+   El resultado es una grilla que se adapta sola:
+   en pantallas grandes hay 3-4 columnas,
+   en tablets 2, en celulares 1.
+============================================ */
+.catalog {
+  max-width: 1100px;
+  margin: 1.6rem auto 4rem;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.6rem; /* espacio entre tarjetas */
+}
+
+/* ============================================
+   TARJETAS
+============================================ */
+.card {
+  background: var(--card-bg);
+  border-radius: 18px;
+  overflow: hidden; /* la imagen respeta los bordes
+                       redondeados de la tarjeta */
+  box-shadow: var(--shadow);
+  transition: transform .22s, box-shadow .22s;
+  display: flex;
+  flex-direction: column; /* imagen arriba, contenido abajo */
+}
+
+.card:hover {
+  transform: translateY(-5px); /* sube 5px al pasar el mouse */
+  box-shadow: 0 12px 36px rgba(30,20,10,.18); /* sombra más intensa */
+}
+
+.card-img-wrap {
+  width: 100%;
+  aspect-ratio: 4/3; /* mantiene la proporción 4:3
+                         sin importar el ancho de la tarjeta */
+  background: #e8dfd0; /* color visible mientras carga la imagen */
+  overflow: hidden;
+}
+
+.card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;       /* la imagen cubre todo el espacio
+                               sin deformarse ni dejar espacios */
+  object-position: center top; /* si hay que recortar, prioriza
+                                   la parte superior de la imagen */
+  display: block; /* evita el espacio extra debajo de la imagen
+                     que los navegadores agregan por defecto */
+  transition: transform .3s;
+}
+
+.card:hover .card-img-wrap img {
+  transform: scale(1.04); /* zoom sutil en la imagen al hacer hover */
+}
+
+.card-body {
+  padding: 1.15rem 1.3rem 1.4rem;
+  flex: 1; /* ocupa todo el espacio vertical restante,
+              lo que hace que todas las tarjetas tengan
+              la misma altura en la grilla */
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.card-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.2;
+}
+
+.card-desc {
+  font-size: .87rem;
+  color: #5a4f44;
+  line-height: 1.55;
+  flex: 1; /* empuja los badges hacia abajo,
+              así quedan siempre al pie de la tarjeta */
+}
+
+.card-badges {
+  display: flex;
+  flex-wrap: wrap; /* si los badges no entran en una línea,
+                      pasan a la siguiente */
+  gap: .4rem;
+  margin-top: .3rem;
+}
+
+/* Estilo base compartido por todos los badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  padding: .26rem .68rem;
+  border-radius: 999px; /* forma de pastilla */
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+/* Colores según el tipo de badge */
+.badge-players      { background: #e8f4ec; color: var(--green); }
+.badge-diff.facil   { background: #e8f4ec; color: var(--green); }
+.badge-diff.media   { background: #fff3e0; color: #b36000;      }
+.badge-diff.dificil { background: #fdecea; color: var(--red);   }
+
+/* ============================================
+   LÓGICA DE FILTRADO — CSS PURO
+   
+   Cada tarjeta tiene clases que indican su
+   dificultad y categorías. Por ejemplo:
+   class="card facil familia dos"
+   
+   Cuando un filtro está activo, ocultamos con
+   display:none todas las tarjetas que NO tengan
+   la clase correspondiente.
+   
+   :not(.facil) significa "que NO tenga la clase facil".
+   
+   Lectura completa del selector:
+   "#filtro-facil:checked ~ .catalog .card:not(.facil)"
+   = "Cuando el radio filtro-facil está chequeado,
+      dentro de .catalog ocultá todas las .card
+      que no tengan la clase .facil"
+============================================ */
+#filtro-facil:checked   ~ .catalog .card:not(.facil)   { display: none; }
+#filtro-media:checked   ~ .catalog .card:not(.media)   { display: none; }
+#filtro-dificil:checked ~ .catalog .card:not(.dificil) { display: none; }
+#filtro-dos:checked     ~ .catalog .card:not(.dos)     { display: none; }
+#filtro-familia:checked ~ .catalog .card:not(.familia) { display: none; }
+#filtro-grande:checked  ~ .catalog .card:not(.grande)  { display: none; }
+
+/* ============================================
+   FOOTER
+============================================ */
+footer {
+  text-align: center;
+  padding: 1.6rem 1rem;
+  background: var(--brown);
+  color: rgba(245,240,232,.5); /* texto semitransparente
+                                   sobre el fondo oscuro */
+  font-size: .82rem;
+}
+
+footer a {
+  color: var(--orange);
+  text-decoration: none; /* saca el subrayado por defecto
+                            de los enlaces */
+}
+
+/* ============================================
+   RESPONSIVE — MEDIA QUERY
+   
+   @media (max-width: 500px) significa:
+   "aplicá estos estilos solo cuando la pantalla
+   mide 500px de ancho o menos" (celulares).
+   
+   En pantallas chicas, la grilla pasa a tener
+   una sola columna para que las tarjetas sean
+   lo suficientemente grandes y legibles.
+============================================ */
+@media (max-width: 500px) {
+  .catalog {
+    grid-template-columns: 1fr; /* una sola columna que ocupa
+     todo el ancho disponible */
+  }
+}

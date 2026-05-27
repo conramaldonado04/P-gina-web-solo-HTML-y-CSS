@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<!--
+  DOCTYPE: Le indica al navegador que este documento
+  usa el estándar HTML5. Siempre va en la primera línea.
+-->
+<html lang="es">
+<!--
+  lang="es": Le dice al navegador y a los lectores
+  de pantalla que el idioma de la página es español.
+  Sirve para accesibilidad y para buscadores.
+-->
+
+<head>
+  <!--
+    HEAD: Contiene metadatos, es decir, información
+    sobre la página que el navegador necesita pero
+    que el usuario no ve directamente en la pantalla.
+  -->
+
+  <meta charset="UTF-8" />
+  <!--
+    charset="UTF-8": Define la codificación de caracteres.
+    UTF-8 soporta tildes, ñ y símbolos especiales.
+    Sin esto, esos caracteres se verían mal.
+  -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!--
+    viewport: Le dice al navegador que adapte el ancho
+    de la página al ancho del dispositivo.
+    Sin esto, en celulares la página se vería
+    como una versión miniatura de escritorio.
+  -->
+
+  <title>¿Qué juego hoy?</title>
+  <!--
+    title: El texto que aparece en la pestaña
+    del navegador y en los resultados de búsqueda.
+  -->
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!--
+    Importa dos tipografías desde Google Fonts:
+    - Playfair Display (con serifa): se usa en títulos
+      para darle un estilo editorial y elegante.
+    - DM Sans (sin serifa): se usa en el texto general
+      para mayor legibilidad.
+    rel="stylesheet" le dice al navegador que este
+    link apunta a un archivo de estilos.
+  -->
+
+  <link rel="stylesheet" href="styles.css" />
+  <!--
+    Vincula el archivo CSS externo con esta página.
+    href="styles.css" es una ruta relativa: busca
+    el archivo en la misma carpeta que el index.html.
+  -->
+</head>
+
+<body>
+  <!--
+    BODY: Contiene todo el contenido visible de la página.
+  -->
+
+  <!--
+    =============================================
+    INPUTS RADIO — MOTOR DEL FILTRADO CSS PURO
+    
+    Estos inputs son invisibles para el usuario
+    (se ocultan con display:none en el CSS).
+    Su función es "recordar" qué filtro está activo.
+    
+    POR QUÉ VAN ANTES DEL HEADER:
+    El selector CSS ~ (hermano siguiente) solo puede
+    apuntar hacia elementos que vienen DESPUÉS en el
+    HTML. Por eso los radio inputs deben estar antes
+    del catálogo y de los labels que los controlan.
+    
+    name="filtro": Agrupa los radios. Al tener el mismo
+    name, solo uno puede estar seleccionado a la vez.
+    
+    id="filtro-todos/facil/...": Identificador único
+    que conecta cada radio con su label mediante
+    el atributo for="" del label.
+    
+    class="filtro-radio": Clase CSS que aplica
+    display:none para ocultarlos visualmente.
+    
+    checked: El atributo en filtro-todos hace que
+    "Todos" esté seleccionado por defecto al cargar.
+    =============================================
+  -->
+  <input type="radio" name="filtro" id="filtro-todos"   class="filtro-radio" checked />
+  <input type="radio" name="filtro" id="filtro-facil"   class="filtro-radio" />
+  <input type="radio" name="filtro" id="filtro-media"   class="filtro-radio" />
+  <input type="radio" name="filtro" id="filtro-dificil" class="filtro-radio" />
+  <input type="radio" name="filtro" id="filtro-dos"     class="filtro-radio" />
+  <input type="radio" name="filtro" id="filtro-familia" class="filtro-radio" />
+  <input type="radio" name="filtro" id="filtro-grande"  class="filtro-radio" />
+
+  <!-- ==========================================
+       HEADER
+       Sección superior de la página con el título
+       y el subtítulo. Los estilos visuales (fondo
+       marrón, gradientes, tipografía) se definen
+       en el CSS con el selector "header".
+  =========================================== -->
+  <header>
+    <h1>¿Qué juego <span>hoy?</span></h1>
+    <!--
+      h1: El título principal de la página.
+      Solo debe haber un h1 por página (buena práctica).
+      El <span> dentro permite aplicarle color naranja
+      solo a la palabra "hoy" desde el CSS, sin afectar
+      el resto del título.
+    -->
+
+    <p>Encontrá tu próximo juego de mesa favorito</p>
+    <!-- Subtítulo descriptivo de la página -->
+
+    <div class="dice-row">🎲 🎯 🃏 🎲 🧩</div>
+    <!--
+      Fila decorativa de emojis. No tiene función
+      interactiva, es puramente visual.
+      La clase "dice-row" aplica display:flex
+      para alinearlos en fila con espacio entre ellos.
+    -->
+  </header>
+
+  <!-- ==========================================
+       FILTROS
+       
+       Cada <label> tiene dos atributos clave:
+       
+       for="filtro-facil": Conecta el label con el
+       input radio de id="filtro-facil". Al hacer
+       clic en el label, el radio se selecciona.
+       Esto es lo que activa el filtrado en CSS.
+       
+       id="label-facil": Permite que el CSS identifique
+       este label específico para cambiarle el estilo
+       cuando su radio correspondiente está activo.
+       
+       class="filter-btn": Le da la apariencia visual
+       de botón redondeado definida en el CSS.
+  =========================================== -->
+  <div class="filters">
+    <span class="filters-label">Filtrar:</span>
+    <label for="filtro-todos"   class="filter-btn" id="label-todos">Todos</label>
+    <label for="filtro-facil"   class="filter-btn" id="label-facil">Fácil</label>
+    <label for="filtro-media"   class="filter-btn" id="label-media">Media</label>
+    <label for="filtro-dificil" class="filter-btn" id="label-dificil">Difícil</label>
+    <label for="filtro-dos"     class="filter-btn" id="label-dos">Para 2</label>
+    <label for="filtro-familia" class="filter-btn" id="label-familia">Familiar</label>
+    <label for="filtro-grande"  class="filter-btn" id="label-grande">Grupo grande</label>
+  </div>
+
+  <!-- ==========================================
+       CATÁLOGO
+       
+       Contenedor principal de todas las tarjetas.
+       El CSS le aplica display:grid para distribuirlas
+       automáticamente en columnas según el ancho
+       disponible de la pantalla.
+       
+       SISTEMA DE CLASES PARA FILTRADO:
+       Cada tarjeta tiene class="card" más una o varias
+       clases adicionales que indican a qué categorías
+       pertenece ese juego:
+       
+         - facil / media / dificil → dificultad
+         - dos     → apto para 2 jugadores
+         - familia → apto para jugar en familia
+         - grande  → apto para grupos grandes
+       
+       El CSS usa esas clases para mostrar u ocultar
+       tarjetas cuando se activa un filtro.
+       Ejemplo: class="card facil familia dos"
+       significa que aparece al filtrar por Fácil,
+       Familiar o Para 2.
+  =========================================== -->
+  <div class="catalog">
+
+    <!-- ==========================================
+         ESTRUCTURA DE CADA TARJETA:
+         
+         <div class="card [clases-de-filtro]">
+           <div class="card-img-wrap">     → contenedor de la imagen
+             <img src="..." alt="..." />   → imagen del juego
+           </div>
+           <div class="card-body">        → contenedor del texto
+             <div class="card-name">      → nombre del juego
+             <div class="card-desc">      → descripción
+             <div class="card-badges">    → etiquetas de info
+               <span class="badge badge-players"> → jugadores
+               <span class="badge badge-diff [dificultad]"> → dificultad
+             </div>
+           </div>
+         </div>
+         
+         alt="...": Texto alternativo de la imagen.
+         Aparece si la imagen no carga y es leído
+         por lectores de pantalla (accesibilidad).
+         src="imagenes/...": Ruta local a la imagen,
+         buscada dentro de la carpeta "imagenes/".
+    =========================================== -->
+
+    <!-- CATAN -->
+    <div class="card media familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/catan.jpg" alt="Caja de Catan" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Catan</div>
+        <div class="card-desc">Colonizá la isla de Catan: recolectá recursos, construí asentamientos y ciudades, y negociá con tus rivales. El clásico de los juegos de estrategia.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 3–4 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICKET TO RIDE -->
+    <div class="card facil familia dos">
+      <div class="card-img-wrap">
+        <img src="imagenes/ticket-to-ride.jpg" alt="Caja de Ticket to Ride" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Ticket to Ride (Aventureros al Tren)</div>
+        <div class="card-desc">Recorré el mapa en tren conectando ciudades con tus vagones. Fácil de aprender, difícil de dominar. Ideal para toda la familia.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–5 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANDEMIC -->
+    <div class="card media dos familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/pandemic.jpg" alt="Caja de Pandemic" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Pandemic</div>
+        <div class="card-desc">Un juego cooperativo donde el equipo trabaja junto para controlar brotes de enfermedades y salvar al mundo. Nadie gana solo.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–4 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARCASSONNE -->
+    <div class="card facil dos familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/carcassonne.jpg" alt="Caja de Carcassonne" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Carcassonne</div>
+        <div class="card-desc">Construí el sur de Francia colocando losetas de campos, ciudades y caminos. Estrategia simple con mucha profundidad. Perfecto para empezar.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–5 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 WONDERS -->
+    <div class="card media grande familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/7-wonders.jpg" alt="Caja de 7 Wonders" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">7 Wonders</div>
+        <div class="card-desc">Liderá una civilización antigua y construí una de las siete maravillas del mundo. Un juego de draft de cartas con muchísima variedad.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–7 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIXIT -->
+    <div class="card facil familia grande">
+      <div class="card-img-wrap">
+        <img src="imagenes/dixit.jpg" alt="Caja de Dixit" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Dixit</div>
+        <div class="card-desc">Un juego de imaginación y narración con hermosas ilustraciones. Inventá pistas creativas para tus cartas sin ser ni demasiado obvio ni demasiado oscuro.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 3–6 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPLENDOR -->
+    <div class="card facil dos familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/splendor.jpg" alt="Caja de Splendor" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Splendor</div>
+        <div class="card-desc">Convertite en un mercader del Renacimiento. Coleccioná gemas, comprá cartas de desarrollo y atraé la atención de la nobleza.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–4 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODENAMES -->
+    <div class="card facil grande familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/codenames.jpg" alt="Caja de Codenames" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Codenames</div>
+        <div class="card-desc">Dos equipos compiten para descubrir a sus agentes secretos con una sola pista de una palabra. Intenso, divertido, y muy adictivo.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 4–8 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AZUL -->
+    <div class="card facil dos familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/azul.jpg" alt="Caja de Azul" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Azul</div>
+        <div class="card-desc">Decorá el palacio real de Portugal con hermosas baldosas. Un abstracto elegante donde cada movimiento importa.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–4 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WINGSPAN -->
+    <div class="card media dos familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/wingspan.jpg" alt="Caja de Wingspan" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Wingspan</div>
+        <div class="card-desc">Convertite en ornitólogo y poblá tu reserva natural con aves de todo el mundo. Un juego visualmente impresionante con mecánicas profundas.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 1–5 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOMINION -->
+    <div class="card media dos">
+      <div class="card-img-wrap">
+        <img src="imagenes/dominion.jpg" alt="Caja de Dominion" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Dominion</div>
+        <div class="card-desc">El juego que inventó el deck-building. Construí tu mazo carta por carta para dominar el reino. Muy alta rejugabilidad.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–4 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HIVE -->
+    <div class="card media dos">
+      <div class="card-img-wrap">
+        <img src="imagenes/hive.jpg" alt="Caja de Hive" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Hive</div>
+        <div class="card-desc">Un abstracto sin tablero: colocá insectos estratégicamente para rodear a la reina rival. Sin dados ni azar, pura estrategia.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TERRAFORMING MARS -->
+    <div class="card dificil dos">
+      <div class="card-img-wrap">
+        <img src="imagenes/terraforming-mars.jpg" alt="Caja de Terraforming Mars" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Terraforming Mars</div>
+        <div class="card-desc">Corporaciones compiten para terraformar el planeta rojo: aumentar temperatura, oxígeno y crear océanos. Profundo y épico.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 1–5 jugadores</span>
+          <span class="badge badge-diff dificil">⚡ Difícil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GLOOMHAVEN -->
+    <div class="card dificil dos">
+      <div class="card-img-wrap">
+        <img src="imagenes/gloomhaven.jpg" alt="Caja de Gloomhaven" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Gloomhaven: Jaws of the Lion</div>
+        <div class="card-desc">Dungeon crawler táctico con campaña narrativa. Cada decisión importa: los personajes evolucionan y el mundo cambia según tus acciones.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 1–4 jugadores</span>
+          <span class="badge badge-diff dificil">⚡ Difícil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MYSTERIUM -->
+    <div class="card media grande familia">
+      <div class="card-img-wrap">
+        <img src="imagenes/mysterium.jpg" alt="Caja de Mysterium" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Mysterium</div>
+        <div class="card-desc">Un fantasma se comunica mediante visiones oníricas para que los demás descubran cómo murió. Una experiencia visual y cooperativa única.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–7 jugadores</span>
+          <span class="badge badge-diff media">⚡ Media</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPLODING KITTENS -->
+    <div class="card facil dos familia grande">
+      <div class="card-img-wrap">
+        <img src="imagenes/exploding-kittens.jpg" alt="Caja de Exploding Kittens" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Exploding Kittens</div>
+        <div class="card-desc">Un juego de cartas estratégico y absurdo. Sacá cartas y rezá para no encontrar un gatito explosivo. Rápido y muy divertido.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–5 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PUERTO RICO -->
+    <div class="card dificil">
+      <div class="card-img-wrap">
+        <img src="imagenes/puerto-rico.jpg" alt="Caja de Puerto Rico" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Puerto Rico</div>
+        <div class="card-desc">Gobernación de una isla colonial donde cada jugador elige un rol con beneficios únicos. Uno de los clásicos de la estrategia avanzada.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 3–5 jugadores</span>
+          <span class="badge badge-diff dificil">⚡ Difícil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNO -->
+    <div class="card facil dos familia grande">
+      <div class="card-img-wrap">
+        <img src="imagenes/uno.jpg" alt="Cartas de UNO" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">¡Uno!</div>
+        <div class="card-desc">El clásico de las cartas que todos conocen. Descartá todas tus cartas usando colores y números, y no te olvides de gritar ¡UNO!</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 2–10 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLUEDO -->
+    <div class="card facil familia grande">
+      <div class="card-img-wrap">
+        <img src="imagenes/cluedo.jpg" alt="Caja de Cluedo" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Clue (Cluedo)</div>
+        <div class="card-desc">Un misterio de asesinato en la mansión Tudor. Descubrí al culpable, el arma y la habitación antes que tus oponentes.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 3–6 jugadores</span>
+          <span class="badge badge-diff facil">⚡ Fácil</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARKHAM HORROR -->
+    <div class="card dificil dos">
+      <div class="card-img-wrap">
+        <img src="imagenes/arkham-horror.jpg" alt="Caja de Arkham Horror" />
+      </div>
+      <div class="card-body">
+        <div class="card-name">Arkham Horror (El juego de cartas)</div>
+        <div class="card-desc">Un juego de cartas cooperativo en el universo de Lovecraft. Investigadores intentan descubrir misterios oscuros antes de perder la cordura.</div>
+        <div class="card-badges">
+          <span class="badge badge-players">👥 1–4 jugadores</span>
+          <span class="badge badge-diff dificil">⚡ Difícil</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- fin .catalog -->
+
+  <footer>
+    Inspirado en el catálogo de
+    <a href="https://estratagema.com.ar" target="_blank">Estratagema 🎲</a>
+    <!--
+      target="_blank": Abre el enlace en una pestaña
+      nueva, para que el usuario no abandone la página.
+    -->
+    — Santa Fe, Argentina
+  </footer>
+
+</body>
+</html>
